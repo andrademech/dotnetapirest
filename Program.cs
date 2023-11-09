@@ -113,5 +113,5 @@ public class ApplicationDbContext : DbContext
 {
   public DbSet<Product> Products { get; set; }
   protected override void OnConfiguring(DbContextOptionsBuilder options) => options
-    .UseSqlServer("Server=localhost;Database=Products;User Id=sa;Password=sql@2023;MultipleActiveResultSets=true;Encrypt=yes;TrustServerCertificate=yes;");
+    .UseSqlServer("Server=localhost;Database=Products;User Id=sa;Password=<sql@2023>;MultipleActiveResultSets=true;Encrypt=yes;TrustServerCertificate=yes;");
 }
