@@ -100,6 +100,11 @@ public static class ProductRepository
   }
 }
 
+public class Category {
+  public int Id { get; set; }
+  public string? Name { get; set; }
+}
+
 public class Product
 {
   public int Id { get; set; }
@@ -107,6 +112,7 @@ public class Product
   public string? Name { get; set; }
   public decimal Price { get; set; }
   public string? Description { get; set; }
+  public Category? Category { get; set; }
 }
 
 public class ApplicationDbContext : DbContext
