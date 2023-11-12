@@ -50,9 +50,12 @@ app.MapGet("/products/{id}", ([FromRoute] int id, ApplicationDbContext context) 
     : Results.NotFound();
 });
 
-app.MapGet("/products", () =>
+app.MapGet("/products", (ApplicationDbContext context) =>
 {
-  var products = ProductRepository.GetAll();
+  var products = context.Products
+    .Include(p => p.Category)
+    .Include(p => p.Tags)
+    .ToList();
 
   return products != null ? Results.Ok(products) : Results.NotFound();
 });
