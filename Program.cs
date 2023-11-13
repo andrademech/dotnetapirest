@@ -57,7 +57,9 @@ app.MapGet("/products", (ApplicationDbContext context) =>
     .Include(p => p.Tags)
     .ToList();
 
-  return products != null ? Results.Ok(products) : Results.NotFound();
+  return products != null
+    ? Results.Ok(products)
+    : Results.NotFound();
 });
 
 app.MapPut("/products/{id}", ([FromRoute] int id, ProductRequest productRequest, ApplicationDbContext context) =>
@@ -71,10 +73,7 @@ app.MapPut("/products/{id}", ([FromRoute] int id, ProductRequest productRequest,
     .Where(c => c.Id == productRequest.CategoryId)
     .FirstOrDefault();
 
-  if (product == null)
-  {
-    return Results.NotFound();
-  }
+  if (product == null) return Results.NotFound();
 
   product.Code = productRequest.Code;
   product.Name = productRequest.Name;
@@ -98,12 +97,20 @@ app.MapPut("/products/{id}", ([FromRoute] int id, ProductRequest productRequest,
   return Results.Ok(product);
 });
 
-app.MapDelete("/products/{code}", ([FromRoute] string code) =>
+app.MapDelete("/products/{id}", ([FromRoute] int id, ApplicationDbContext context) =>
 {
-  ProductRepository.Delete(code);
+  var product = context.Products
+    .Where(p => p.Id == id).FirstOrDefault();
 
-  return Results.Ok();
+  if (product == null) return Results.NotFound();
+
+  context.Products.Remove(product);
+
+  context.SaveChanges();
+
+  return Results.Ok($"Product {id} deleted");
 });
+
 if (app.Environment.IsStaging())
 {
   app.MapGet("/configuration/database", (IConfiguration configuration) => Results.Ok($"{configuration["database:connection"]}/{configuration["database:port"]}"));
